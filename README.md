@@ -26,7 +26,7 @@ Setup
    node server.js
 
 Deployed Application
-https://YOUR-RENDER-URL.onrender.com
+https://assignment-3-habit-tracker.onrender.com
 
 Description
 Habit Tracker full-stack web application with CRUD functionality.
@@ -42,4 +42,4 @@ Environment Variables
 - MONGO_URI
 
 Deployed URL
-https://your-render-url.onrender.com
+https://assignment-3-habit-tracker.onrender.com
