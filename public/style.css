@@ -1,0 +1,78 @@
+/* Base styles */
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background-color: #e8f5e9;
+    color: #2e7d32;
+    margin: 0;
+    padding: 0;
+}
+
+/* Layout container */
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 50px 25px;
+    text-align: center;
+}
+
+/* Header section */
+header {
+    background-color: #f1f8f4;
+    border-bottom: 2px solid #c8e6c9;
+}
+
+h1 {
+    font-size: 2.6rem;
+    margin-bottom: 10px;
+    letter-spacing: 1px;
+}
+
+.subtitle {
+    font-size: 1.15rem;
+    color: #388e3c;
+}
+
+/* Sections */
+section {
+    margin-top: 45px;
+    padding: 25px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+}
+
+h2 {
+    color: #1b5e20;
+}
+
+/* Form */
+input, select, button {
+    padding: 10px;
+    margin: 5px;
+    border-radius: 6px;
+    border: 1px solid #c8e6c9;
+}
+
+button {
+    background-color: #66bb6a;
+    color: white;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #43a047;
+}
+
+/* List */
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+li {
+    background-color: #f1f8f4;
+    margin: 10px auto;
+    padding: 12px;
+    border-radius: 6px;
+    max-width: 500px;
+}
