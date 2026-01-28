@@ -1,11 +1,16 @@
 require('dotenv').config();
 const mongoose = require('mongoose');
-const Habit = require('../models/Habit');
+const Habit = require('../models/Habit'); // путь к твоей модели Habit
 
-mongoose.connect(process.env.MONGO_URI)
+// Подключение к MongoDB
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+})
   .then(() => console.log('MongoDB connected for seeding'))
   .catch(err => console.error(err));
 
+// Массив из 55 привычек
 const habits = [
   { "title": "Drink water", "frequency": "daily", "priority": 2 },
   { "title": "Morning walk", "frequency": "daily", "priority": 1 },
@@ -72,9 +77,17 @@ const habits = [
   { "title": "Reduce caffeine", "frequency": "daily", "priority": 55 }
 ];
 
-Habit.insertMany(habits)
-  .then(() => {
-    console.log('✅ 55 habits inserted');
-    process.exit();
-  })
-  .catch(err => console.error(err));
+// Функция для вставки привычек
+const seedDB = async () => {
+  try {
+    await Habit.deleteMany({}); // удаляем старые привычки
+    await Habit.insertMany(habits); // добавляем новые 55 привычек
+    console.log('✅ 55 habits inserted successfully!');
+    mongoose.connection.close();
+  } catch (err) {
+    console.error(err);
+    mongoose.connection.close();
+  }
+};
+
+seedDB();
