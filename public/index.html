@@ -9,207 +9,145 @@
   <header>
     <div class="container">
       <h1>🌱 Habit Tracker API</h1>
-      <p class="subtitle">
-        Backend API for tracking daily and weekly habits using Node.js & MongoDB
-      </p>
+      <p class="subtitle">Backend API for tracking daily and weekly habits using Node.js & MongoDB</p>
     </div>
   </header>
 
   <main class="container">
 
-    <!-- READ -->
+    <!-- Display all habits -->
     <section>
-      <h2>READ (GET)</h2>
-      <ul>
-        <li><a href="/api/habits" target="_blank">GET /api/habits (all habits)</a></li>
-        <li>
-          <a href="/api/habits/696dc7ccc26025594f136297" target="_blank">
-            GET /api/habits/:id (single habit)
-          </a>
-        </li>
-      </ul>
+      <h2>Все привычки</h2>
+      <ul id="habit-list"></ul>
     </section>
 
-    <!-- CREATE -->
+    <!-- Filter / Sort / Projection -->
     <section>
-      <h2>CREATE (POST)</h2>
-      <p>
-        Use this endpoint to create a new habit.<br>
-        Example body:
-      </p>
-      <pre>
-POST /api/habits
-{
-  "title": "Read books",
-  "frequency": "daily"
-}
-      </pre>
-      <p>Status: <strong>201 Created</strong></p>
-    </section>
-    <section>
-  <h2>➕ Create Habit (POST)</h2>
-
-  <input id="create-title" placeholder="Title" />
-  <input id="create-frequency" placeholder="daily / weekly" />
-  <button onclick="createHabit()">Create</button>
-
-  <pre id="create-result"></pre>
-</section>
-
-<script>
-async function createHabit() {
-  const title = document.getElementById('create-title').value;
-  const frequency = document.getElementById('create-frequency').value;
-
-  const res = await fetch('/api/habits', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ title, frequency })
-  });
-
-  const data = await res.json();
-  document.getElementById('create-result').textContent =
-    `Status: ${res.status}\n` + JSON.stringify(data, null, 2);
-}
-</script>
-
-
-    <!-- UPDATE -->
-    <section>
-      <h2>UPDATE (PUT)</h2>
-      <p>
-        Update an existing habit by ID.
-      </p>
-      <pre>
-PUT /api/habits/:id
-{
-  "title": "Read books",
-  "frequency": "weekly"
-}
-      </pre>
-      <p>Status: <strong>200 OK</strong></p>
-    </section>
-    <section>
-  <h2>✏️ Update Habit (PUT)</h2>
-
-  <input id="update-id" placeholder="Habit ID" />
-  <input id="update-title" placeholder="New title" />
-  <input id="update-frequency" placeholder="daily / weekly" />
-  <button onclick="updateHabit()">Update</button>
-
-  <pre id="update-result"></pre>
-</section>
-
-<script>
-async function updateHabit() {
-  const id = document.getElementById('update-id').value;
-  const title = document.getElementById('update-title').value;
-  const frequency = document.getElementById('update-frequency').value;
-
-  const res = await fetch(`/api/habits/${id}`, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ title, frequency })
-  });
-
-  const data = await res.json();
-  document.getElementById('update-result').textContent =
-    `Status: ${res.status}\n` + JSON.stringify(data, null, 2);
-}
-</script>
-
-
-    <!-- DELETE -->
-    <section>
-      <h2>DELETE</h2>
-      <p>
-        Delete habit by ID:
-      </p>
-      <a href="/api/habits/696dc7ccc26025594f136297" target="_blank">
-        DELETE /api/habits/:id
-      </a>
-      <p>Status: <strong>200 OK</strong></p>
-    </section>
-    <section>
-  <h2>🗑 Delete Habit (DELETE)</h2>
-
-  <input id="delete-id" placeholder="Habit ID" />
-  <button onclick="deleteHabit()">Delete</button>
-
-  <pre id="delete-result"></pre>
-</section>
-
-<script>
-async function deleteHabit() {
-  const id = document.getElementById('delete-id').value;
-
-  const res = await fetch(`/api/habits/${id}`, {
-    method: 'DELETE'
-  });
-
-  const data = await res.json();
-  document.getElementById('delete-result').textContent =
-    `Status: ${res.status}\n` + JSON.stringify(data, null, 2);
-}
-</script>
-<section>
-  <h2>📥 Read (GET)</h2>
-  <ul>
-    <li><a href="/api/habits">GET all habits</a></li>
-    <li><a href="/api/habits?frequency=daily">Filter by frequency</a></li>
-    <li><a href="/api/habits?sortBy=createdAt&order=desc">Sort</a></li>
-    <li><a href="/api/habits?fields=title,frequency">Projection</a></li>
-  </ul>
-</section>
-
-
-    <!-- FILTER / SORT / PROJECTION -->
-    <section>
-      <h2>Filtering, Sorting & Projection</h2>
-      <ul>
-        <li>
-          <a href="/api/habits?completed=false" target="_blank">
-            Filter: incomplete habits
-          </a>
-        </li>
-        <li>
-          <a href="/api/habits?sortBy=createdAt&order=desc" target="_blank">
-            Sort by creation date (DESC)
-          </a>
-        </li>
-        <li>
-          <a href="/api/habits?fields=title,frequency" target="_blank">
-            Projection (only title & frequency)
-          </a>
-        </li>
-      </ul>
+      <h2>Фильтры и сортировка</h2>
+      <button onclick="loadHabitsFiltered('daily')">Только daily</button>
+      <button onclick="loadHabitsFiltered('weekly')">Только weekly</button>
+      <button onclick="loadHabitsSorted('createdAt','desc')">Сортировать по дате (DESC)</button>
+      <button onclick="loadHabitsProjection('title,frequency')">Только title и frequency</button>
+      <button onclick="loadHabits()">Сбросить фильтры</button>
     </section>
 
-    <!-- STATUS CODES -->
+    <!-- Create Habit -->
     <section>
-      <h2>HTTP Status Codes Test</h2>
-      <ul>
-        <li>
-          <a href="/api/habits/INVALID_ID" target="_blank">
-            400 Bad Request (invalid ID)
-          </a>
-        </li>
-        <li>
-          <a href="/api/habits/000000000000000000000000" target="_blank">
-            404 Not Found (non-existing record)
-          </a>
-        </li>
-        <li>
-          <a href="/api/unknown-route" target="_blank">
-            Global 404 Handler
-          </a>
-        </li>
-      </ul>
-      <p>
-        500 Internal Server Error can be demonstrated by stopping MongoDB.
-      </p>
+      <h2>➕ Создать привычку</h2>
+      <input id="create-title" placeholder="Title" />
+      <input id="create-frequency" placeholder="daily / weekly" />
+      <button onclick="createHabit()">Создать</button>
+      <pre id="create-result"></pre>
+    </section>
+
+    <!-- Update Habit -->
+    <section>
+      <h2>✏️ Обновить привычку</h2>
+      <input id="update-id" placeholder="Habit ID" />
+      <input id="update-title" placeholder="Новый title" />
+      <input id="update-frequency" placeholder="daily / weekly" />
+      <button onclick="updateHabit()">Обновить</button>
+      <pre id="update-result"></pre>
+    </section>
+
+    <!-- Delete Habit -->
+    <section>
+      <h2>🗑 Удалить привычку</h2>
+      <input id="delete-id" placeholder="Habit ID" />
+      <button onclick="deleteHabit()">Удалить</button>
+      <pre id="delete-result"></pre>
     </section>
 
   </main>
+
+  <script>
+    // Load all habits
+    async function loadHabits() {
+      const res = await fetch('/api/habits');
+      const habits = await res.json();
+      renderHabits(habits);
+    }
+
+    // Load filtered habits
+    async function loadHabitsFiltered(frequency) {
+      const res = await fetch(`/api/habits?frequency=${frequency}`);
+      const habits = await res.json();
+      renderHabits(habits);
+    }
+
+    // Load sorted habits
+    async function loadHabitsSorted(field, order) {
+      const res = await fetch(`/api/habits?sortBy=${field}&order=${order}`);
+      const habits = await res.json();
+      renderHabits(habits);
+    }
+
+    // Load projected habits
+    async function loadHabitsProjection(fields) {
+      const res = await fetch(`/api/habits?fields=${fields}`);
+      const habits = await res.json();
+      renderHabits(habits);
+    }
+
+    // Render habits list
+    function renderHabits(habits) {
+      const list = document.getElementById('habit-list');
+      list.innerHTML = '';
+      habits.forEach(habit => {
+        const li = document.createElement('li');
+        li.textContent = `${habit.title} — ${habit.frequency} (ID: ${habit._id})`;
+        list.appendChild(li);
+      });
+    }
+
+    // Create habit
+    async function createHabit() {
+      const title = document.getElementById('create-title').value;
+      const frequency = document.getElementById('create-frequency').value;
+
+      const res = await fetch('/api/habits', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, frequency })
+      });
+      const data = await res.json();
+      document.getElementById('create-result').textContent =
+        `Status: ${res.status}\n` + JSON.stringify(data, null, 2);
+      loadHabits();
+    }
+
+    // Update habit
+    async function updateHabit() {
+      const id = document.getElementById('update-id').value;
+      const title = document.getElementById('update-title').value;
+      const frequency = document.getElementById('update-frequency').value;
+
+      const res = await fetch(`/api/habits/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, frequency })
+      });
+      const data = await res.json();
+      document.getElementById('update-result').textContent =
+        `Status: ${res.status}\n` + JSON.stringify(data, null, 2);
+      loadHabits();
+    }
+
+    // Delete habit
+    async function deleteHabit() {
+      const id = document.getElementById('delete-id').value;
+
+      const res = await fetch(`/api/habits/${id}`, {
+        method: 'DELETE'
+      });
+      const data = await res.json();
+      document.getElementById('delete-result').textContent =
+        `Status: ${res.status}\n` + JSON.stringify(data, null, 2);
+      loadHabits();
+    }
+
+    // Initial load
+    loadHabits();
+  </script>
 </body>
 </html>
