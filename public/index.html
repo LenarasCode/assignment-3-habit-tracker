@@ -1,42 +1,215 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Habit Tracker</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <title>Habit Tracker API</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-
-<header>
+  <header>
     <div class="container">
-        <h1>Habit Tracker</h1>
-        <p class="subtitle">
-            Build healthy habits and track your daily progress 🌱
-        </p>
+      <h1>🌱 Habit Tracker API</h1>
+      <p class="subtitle">
+        Backend API for tracking daily and weekly habits using Node.js & MongoDB
+      </p>
     </div>
-</header>
+  </header>
 
-<div class="container">
+  <main class="container">
 
+    <!-- READ -->
     <section>
-        <h2>Add New Habit</h2>
-        <form id="habitForm">
-            <input type="text" id="title" placeholder="Habit name" required>
-            <select id="frequency">
-                <option value="daily">Daily</option>
-                <option value="weekly">Weekly</option>
-            </select>
-            <button type="submit">Add Habit</button>
-        </form>
+      <h2>READ (GET)</h2>
+      <ul>
+        <li><a href="/api/habits" target="_blank">GET /api/habits (all habits)</a></li>
+        <li>
+          <a href="/api/habits/696dc7ccc26025594f136297" target="_blank">
+            GET /api/habits/:id (single habit)
+          </a>
+        </li>
+      </ul>
     </section>
 
+    <!-- CREATE -->
     <section>
-        <h2>Your Habits</h2>
-        <ul id="habitList"></ul>
+      <h2>CREATE (POST)</h2>
+      <p>
+        Use this endpoint to create a new habit.<br>
+        Example body:
+      </p>
+      <pre>
+POST /api/habits
+{
+  "title": "Read books",
+  "frequency": "daily"
+}
+      </pre>
+      <p>Status: <strong>201 Created</strong></p>
+    </section>
+    <section>
+  <h2>➕ Create Habit (POST)</h2>
+
+  <input id="create-title" placeholder="Title" />
+  <input id="create-frequency" placeholder="daily / weekly" />
+  <button onclick="createHabit()">Create</button>
+
+  <pre id="create-result"></pre>
+</section>
+
+<script>
+async function createHabit() {
+  const title = document.getElementById('create-title').value;
+  const frequency = document.getElementById('create-frequency').value;
+
+  const res = await fetch('/api/habits', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ title, frequency })
+  });
+
+  const data = await res.json();
+  document.getElementById('create-result').textContent =
+    `Status: ${res.status}\n` + JSON.stringify(data, null, 2);
+}
+</script>
+
+
+    <!-- UPDATE -->
+    <section>
+      <h2>UPDATE (PUT)</h2>
+      <p>
+        Update an existing habit by ID.
+      </p>
+      <pre>
+PUT /api/habits/:id
+{
+  "title": "Read books",
+  "frequency": "weekly"
+}
+      </pre>
+      <p>Status: <strong>200 OK</strong></p>
+    </section>
+    <section>
+  <h2>✏️ Update Habit (PUT)</h2>
+
+  <input id="update-id" placeholder="Habit ID" />
+  <input id="update-title" placeholder="New title" />
+  <input id="update-frequency" placeholder="daily / weekly" />
+  <button onclick="updateHabit()">Update</button>
+
+  <pre id="update-result"></pre>
+</section>
+
+<script>
+async function updateHabit() {
+  const id = document.getElementById('update-id').value;
+  const title = document.getElementById('update-title').value;
+  const frequency = document.getElementById('update-frequency').value;
+
+  const res = await fetch(`/api/habits/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ title, frequency })
+  });
+
+  const data = await res.json();
+  document.getElementById('update-result').textContent =
+    `Status: ${res.status}\n` + JSON.stringify(data, null, 2);
+}
+</script>
+
+
+    <!-- DELETE -->
+    <section>
+      <h2>DELETE</h2>
+      <p>
+        Delete habit by ID:
+      </p>
+      <a href="/api/habits/696dc7ccc26025594f136297" target="_blank">
+        DELETE /api/habits/:id
+      </a>
+      <p>Status: <strong>200 OK</strong></p>
+    </section>
+    <section>
+  <h2>🗑 Delete Habit (DELETE)</h2>
+
+  <input id="delete-id" placeholder="Habit ID" />
+  <button onclick="deleteHabit()">Delete</button>
+
+  <pre id="delete-result"></pre>
+</section>
+
+<script>
+async function deleteHabit() {
+  const id = document.getElementById('delete-id').value;
+
+  const res = await fetch(`/api/habits/${id}`, {
+    method: 'DELETE'
+  });
+
+  const data = await res.json();
+  document.getElementById('delete-result').textContent =
+    `Status: ${res.status}\n` + JSON.stringify(data, null, 2);
+}
+</script>
+<section>
+  <h2>📥 Read (GET)</h2>
+  <ul>
+    <li><a href="/api/habits">GET all habits</a></li>
+    <li><a href="/api/habits?frequency=daily">Filter by frequency</a></li>
+    <li><a href="/api/habits?sortBy=createdAt&order=desc">Sort</a></li>
+    <li><a href="/api/habits?fields=title,frequency">Projection</a></li>
+  </ul>
+</section>
+
+
+    <!-- FILTER / SORT / PROJECTION -->
+    <section>
+      <h2>Filtering, Sorting & Projection</h2>
+      <ul>
+        <li>
+          <a href="/api/habits?completed=false" target="_blank">
+            Filter: incomplete habits
+          </a>
+        </li>
+        <li>
+          <a href="/api/habits?sortBy=createdAt&order=desc" target="_blank">
+            Sort by creation date (DESC)
+          </a>
+        </li>
+        <li>
+          <a href="/api/habits?fields=title,frequency" target="_blank">
+            Projection (only title & frequency)
+          </a>
+        </li>
+      </ul>
     </section>
 
-</div>
+    <!-- STATUS CODES -->
+    <section>
+      <h2>HTTP Status Codes Test</h2>
+      <ul>
+        <li>
+          <a href="/api/habits/INVALID_ID" target="_blank">
+            400 Bad Request (invalid ID)
+          </a>
+        </li>
+        <li>
+          <a href="/api/habits/000000000000000000000000" target="_blank">
+            404 Not Found (non-existing record)
+          </a>
+        </li>
+        <li>
+          <a href="/api/unknown-route" target="_blank">
+            Global 404 Handler
+          </a>
+        </li>
+      </ul>
+      <p>
+        500 Internal Server Error can be demonstrated by stopping MongoDB.
+      </p>
+    </section>
 
-<script src="script.js"></script>
+  </main>
 </body>
 </html>
